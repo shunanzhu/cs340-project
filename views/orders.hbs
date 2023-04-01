@@ -1,0 +1,177 @@
+{{!-- Citation for the following code:
+      Date: March 20, 2023
+      Adapted from nodejs-starter-app and modified to fit our project needs
+      Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app
+--}}
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav nav-pills nav-fill">
+              <li class="nav-item" ><a class="nav-link" href="/">Home</a></li>
+              <li class="nav-item"><a href="/items">Menu</a></li>
+              <li class="nav-item"><a class="nav-link" href="/customers">Customers</a></li>
+              <li class="nav-item"><a class="nav-link" href="/employees">Employees</a></li>
+              <li class="nav-item active"><a class="nav-link" href="/orders">Orders</a></li>
+              <li class="nav-item "><a class="nav-link" href="/ordersbyemployee">Orders by Employee</a></li>
+              <li class="nav-item"><a class="nav-link" href="/orderdetails">Order Details<span class="sr-only"></span></a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+{{!-- Create a table --}}
+
+<div class="table-responsive"> 
+    <table class="table table-bordered border-primary" id="orders-table">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr data-value={{this.order_id}}>
+            <td>{{this.order_id}}</td>
+            <td>{{this.customer_id}}</td>
+            <td>{{dateHelper this.date}}</td>
+            <td>{{booleanHelper this.take_out}}</td>
+            <td>{{this.total_price}}</td>
+            <td><a onclick="deleteOrder({{this.order_id}})" class='danger'>Delete</a></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+<script src="./js/delete_order.js"></script>
+
+
+<h3 class="text-center">New Order</h3> {{!-- HTML --}}
+<p class="fw-light text-center">To add a new order, please enter its information below and click 'Submit'!</p>
+<form id="add-order-form" method="POST" action="/add-order-form">
+    <label for="input-customer_id">Customer ID: </label>
+    <select 
+        class="form-select" 
+        name="input-customer_id" 
+        id="input-customer_id"
+    >
+    <option value="">Select a Customer</option>
+        {{#each customers}}
+        <option value="{{this.customer_id}}">{{this.customer_id_name}}</option>
+        {{/each}}
+    </select>
+                    
+    <label for="input-date">Order Date:</label>
+    <input type="date" name="input-date" id="input-date">
+
+    <div>
+        <label>Is this a takeout order?</label>
+        <label for="yes">Yes</label>
+        <input class="form-check-input" type="radio" id="take_out-yes" name="input-take_out" value="1" required/>
+        <label for="no">No</label>
+        <input  class="form-check-input"  type="radio" id="take_out-no" name="input-take_out" value="0" checked/>
+    </div>
+
+    <label for="input-total_price">Total Price: </label>
+    <input class="form-control" type="decimal" name="input-total_price" id="input-total_price">
+
+    <div>
+        <button type="submit" class="btn btn-outline-primary">Submit</button>
+    </div>
+</form>
+
+<div class='section'>
+	<h3 class="text-center">Update Order</h3>
+	<p class="fw-light text-center">To update order information, select an order from the drop-down menu and
+			input any new data.
+    </p>
+ 
+  	<form id='update-order' method='POST' action='/update-order'>
+		<table class='sub-table'>
+			<tr>
+				<td><label for='order'>Select an order: </label></td>
+				<td><select
+                        class="form-select" 
+						name='order_id'
+						id='update_order_select'
+						required
+					>
+						<option value='order'>Select an order</option>
+						{{#each data}}
+							<option value='{{this.order_id}}'>{{this.order_id}}</option>
+						{{/each}}
+					</select></td>
+				<td>*Required</td>
+			</tr>
+			<tr>
+				<td><label for='update_customer_id'>Customer: </label></td>
+				<td><select
+                        class="form-select" 
+						type='text'
+						name='update_customer_id'
+						id='update_customer_id'
+						required
+					/>
+                    <option value='customer_id'>Select a customer</option>
+                        {{#each customers}}
+                        <option value="{{this.customer_id}}">{{this.customer_id_name}}</option>
+                        {{/each}}
+					</select></td>
+				<td>*Required</td>
+			</tr>
+			<tr>
+				<td><label for='update_date'>Date: </label></td>
+				<td><input
+                        class="form-control"
+						type='date'
+						name='update_date'
+						id='update_date'
+						required
+					/></td>
+				<td>*Required</td>
+			</tr>
+			<tr>
+				<td><label for='update_total_price'>Total price: </label></td>
+				<td><input
+                        class="form-control"
+						type='text'
+						name='update_total_price'
+						id='update_total_price'
+						required
+					/></td>
+				<td>*Required</td>
+			</tr>
+		</table>
+		<div class='form-btns'>
+      <button type="submit" class="btn btn-outline-primary">Update</button>
+		</div>
+	</form>
+  </div>  
+<br/>
+
+<br/>
+<br/>

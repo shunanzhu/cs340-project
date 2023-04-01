@@ -1,0 +1,107 @@
+{{!-- Citation for the following code:
+      Date: March 20, 2023
+      Adapted from nodejs-starter-app and modified to fit our project needs
+      Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app
+--}}
+ 
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav nav-pills nav-fill">
+              <li class="nav-item" ><a class="nav-link" href="/">Home</a></li>
+              <li class="nav-item"><a href="/items">Menu</a></li>
+              <li class="nav-item"><a class="nav-link" href="/customers">Customers</a></li>
+              <li class="nav-item"><a class="nav-link" href="/employees">Employees</a></li>
+              <li class="nav-item"><a class="nav-link" href="/orders">Orders</a></li>
+              <li class="nav-item"><a class="nav-link" href="/ordersbyemployee">Orders by Employee</a></li>
+              <li class="nav-item active"><a class="nav-link" href="/orderdetails">Order Details<span class="sr-only"></span></a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+{{!-- Create a table --}}
+<div class="table-responsive"> 
+   <table class="table table-bordered border-primary" id="items-table">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.order_details_id}}</td>
+            <td>{{this.order_id}}</td>
+            <td>{{this.item_id}}</td>
+            <td>{{this.qty}}</td>
+            <td>{{this.line_total}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+<div class='section'>
+
+<h3 class="text-center">New Order Details</h3>
+<p class="fw-light text-center">To add a new order detail, please enter the information below and click 'Submit'!</p>
+<form id="add-order-detail-form" method="POST" action="/add-order-detail-form">
+        <label for="input-order_id">Order ID: </label>
+        <select 
+        class="form-select"    
+        name="input-order_id" 
+        id="input-order_id"
+    >
+        <option value="">Select an order</option>
+            {{#each orders}}
+            <option value="{{this.order_id}}">{{this.order_id}}</option>
+            {{/each}}
+        </select>
+            <label for="input-item_id">Item ID: </label>
+        <select class="form-select" name="input-item_id" id="input-item_id">
+            <option value="">Select an item</option>
+            {{#each items}}
+            <option value="{{this.item_id}}">{{this.item_id_name}}</option>
+            {{/each}}
+        </select>
+
+        <label for="input-qty">Quantity: </label>
+        <input type="number" min="1" max="50"  name="input-qty" id="input-qty">
+        <label for="input-line_total">Line Total: </label>
+        <input type="decimal" name="input-line_total" id="input-line_total">
+        
+        <div>
+            <button type="submit" class="btn btn-outline-primary">Submit</button>
+        </div>
+
+</form>
+</div>
+
+<br/>
+<br/>
+<br/>
+<br/>

@@ -1,0 +1,167 @@
+{{!-- Citation for the following code:
+      Date: March 20, 2023
+      Adapted from nodejs-starter-app and modified to fit our project needs
+      Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app
+--}}
+
+{{!-- The Data from our Database --}}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav nav-pills nav-fill">
+              <li class="nav-item" ><a class="nav-link" href="/">Home</a></li>
+              <li class="nav-item active"><a href="/items">Menu</a></li>
+              <li class="nav-item"><a class="nav-link" href="/customers">Customers</a></li>
+              <li class="nav-item"><a class="nav-link" href="/employees">Employees</a></li>
+              <li class="nav-item"><a class="nav-link" href="/orders">Orders</a></li>
+              <li class="nav-item"><a class="nav-link" href="/ordersbyemployee">Orders by Employee</a></li>
+              <li class="nav-item"><a class="nav-link" href="/orderdetails">Order Details<span class="sr-only"></span></a></li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+{{!-- Create a table --}}
+
+
+<div class="table-responsive"> 
+    <table class="table table-bordered border-primary" id="items-table">
+
+    {{!-- Header section --}}
+        <thead>
+
+            {{!-- For just the first row, we print each key of the row object as a header cell so we
+            know what each column means when the page renders --}}
+            <tr>
+                {{#each data.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
+            </tr>
+        </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr data-value={{this.item_id}}>
+            <td>{{this.item_id}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.description}}</td>
+            <td ><a onclick="deleteItem({{this.item_id}})" class='danger'/>Delete</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+<script src="./js/delete_item.js"></script>
+
+<h3 class="text-center">New Item</h3>
+<p class="fw-light text-center">To add a new item, please enter its information below and click 'Submit'!</p>
+<form id="add-item-form" method="POST" action="/add-item-form">
+
+    <div class="form-floating mb-3">
+      <input type="text"  class="form-control form-control-sm" name="input-name" id="input-name" placeholder="Name">
+      <label for="input-name">Name: </label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text"  class="form-control" name="input-price" id="input-price" placeholder="Price">
+      <label for="input-price">Price: </label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <input type="text"  class="form-control" name="input-description" id="input-description" placeholder="Description">
+      <label for="input-description">Description: </label>
+    </div>
+
+    <button type="submit" class="btn btn-outline-primary">Submit</button>
+  </div>
+</form>
+
+
+<div class='section'>
+	<h3 class="text-center">Update Item</h3>
+	<p class="fw-light text-center">To update item information, select an item from the drop-down menu and
+			input any new data.
+    </p>
+ 
+  	<form id='update-item' method='POST' action='/update-item'>
+		<table class='sub-table'>
+			<tr>
+				<td><label for='item_id'>Select an Item: </label></td>
+				<td><select
+            class="form-select" 
+						name='item_id'
+						id='update_item_select'
+						onChange='formFill()'
+						required
+					>
+						<option value='item'>Select an item</option>
+						{{#each data}}
+							<option value='{{this.item_id}}'>{{this.name}}</option>
+						{{/each}}
+					</select></td>
+				<td>*Required</td>
+			</tr>
+			<tr>
+				<td><label for='update_name'>Name: </label></td>
+				<td><input
+            class="form-control"
+						type='text'
+						name='update_name'
+						id='update_name'
+						required
+					/></td>
+				<td>*Required</td>
+			</tr>
+			<tr>
+				<td><label for='update_price'>Price: </label></td>
+				<td><input
+            class="form-control"
+						type='text'
+						name='update_price'
+						id='update_price'
+						required
+					/></td>
+				<td>*Required</td>
+			</tr>
+			<tr>
+				<td><label for='update_description'>Description: </label></td>
+				<td><input
+            class="form-control"
+						type='text'
+						name='update_description'
+						id='update_description'
+						required
+					/></td>
+				<td>*Required</td>
+			</tr>
+		</table>
+		<div class='form-btns'>
+      <button type="submit" class="btn btn-outline-primary">Update</button>
+		</div>
+	</form>
+  </div>  
+<br/>
+
+<br/>
+<br/>
+<br/>
+<br/>
